@@ -1,6 +1,7 @@
 import { Player } from "../Models/ContentModels/Player.js"
 import { GameUI } from "../UI/index.js"
 import { Controls, GameKey } from "./GameControls.js"
+import { texture } from "../../content/models/Player.json"
 
 export enum GameEntityType {
     Air,
@@ -36,22 +37,21 @@ export class Core {
     MapElementsHandler(): void {
         this.controls.keypressF()
 
+        this.updateTypedMap(this.player.x, this.player.y, " ")
         switch (this.controls.getActiveControls()) {
             case GameKey.Up:
-                this.updateTypedMap(this.player.x, this.player.y, " ")
                 this.player.y -= 1
                 break
             case GameKey.Down:
-                this.updateTypedMap(this.player.x, this.player.y, " ")
                 this.player.y += 1
                 break
             case GameKey.Left:
-                this.updateTypedMap(this.player.x, this.player.y, " ")
                 this.player.x -= 1
+                this.player.texture = texture[0]
                 break
             case GameKey.Right:
-                this.updateTypedMap(this.player.x, this.player.y, " ")
                 this.player.x += 1
+                this.player.texture = texture[1]
                 break
             default: 
                 this.player.x += 0
