@@ -27,7 +27,7 @@ export class Core {
         this.renderer = renderer
         this.controls = new Controls()
 
-        this.player = new Player(3, 2, "@")
+        this.player = new Player(3, 2)
 
         this.RawMap = new GameUI().getMap()
         this.TypedMap = this.getTypedMap()
