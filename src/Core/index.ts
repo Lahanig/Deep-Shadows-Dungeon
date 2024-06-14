@@ -184,10 +184,10 @@ export class Renderer extends Core {
             })
 
             console.clear()
-            console.log('Deep Shadows Dungeon \n')
+            console.log(`Deep Shadows Dungeon`)
+            console.log(` `)
             console.log('  Level 1')
             console.log(temp.UI.Map)
-            console.log(`hello world!`)
             console.log(` `, this.getCurrentTypedMap()[1][2])
         }, this.gameLoop.timeout)
     }
