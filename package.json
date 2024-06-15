@@ -1,6 +1,6 @@
 {
   "name": "deep-shadows-dungeon",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "description": "CLA RogueLike on typescript",
   "main": "./build/index.js",
   "bin": "./build/index.js",

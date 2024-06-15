@@ -26,24 +26,29 @@ export class Controls {
     }
 
     async keypressF() {
-        keypress(process.stdin)
-        process.stdin.on('keypress', async  (ch: any, key: any) => {
-            // console.log("got key", key)
-            this.currentKeyPressed = this.getActiveControlsType(key.name)
+        try {
+            keypress(process.stdin)
+            process.stdin.on('keypress', async  (ch: any, key: any) => {
+                // console.log("got key", key)
+                this.currentKeyPressed = this.getActiveControlsType(key.name)
 
-            // setTimeout(() => {this.currentKeyPressed = this.getActiveControlsType("hh")}, 16.6)
-            if (key && key.ctrl && key.name == 'c') {
-                process.exit()
-            }
-        })
+                // setTimeout(() => {this.currentKeyPressed = this.getActiveControlsType("hh")}, 16.6)
+                if (key && key.ctrl && key.name == 'c') {
+                    process.exit()
+                }
+            })
 
-        process.stdin.on('keyrelease', async  (ch: any, key: any) => {
-            console.log("got key", key)
-            this.currentKeyPressed = this.getActiveControlsType("")
-        })
-    
-        process.stdin.setRawMode(true)
-        process.stdin.resume()
+            process.stdin.on('keyrelease', async  (ch: any, key: any) => {
+                console.log("got key", key)
+                this.currentKeyPressed = this.getActiveControlsType("")
+            })
+
+            
+            process.stdin.setRawMode(true)
+            process.stdin.resume()
+        } catch(e) {
+            console.log(e)
+        }
     }
 
     getActiveControlsType(key: string) {
