@@ -49,7 +49,7 @@ export class Renderer extends Core {
             })
 
             console.clear()
-            console.log(`Deep Shadows Dungeon`)
+            console.log(`Deep Shadows Dungeon ${this.controls.getPlayerLocale()}`)
             console.log(` `)
             console.log('  Level 1')
             console.log(temp.UI.Map)

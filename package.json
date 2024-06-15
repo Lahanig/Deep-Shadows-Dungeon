@@ -1,6 +1,6 @@
 {
   "name": "deep-shadows-dungeon",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "CLA RogueLike on typescript",
   "main": "./build/index.js",
   "bin": "./build/index.js",
@@ -19,6 +19,7 @@
   "author": "Kaibi",
   "license": "ISC",
   "devDependencies": {
+    "node-key-sender": "^1.0.11",
     "typescript": "^5.4.5"
   },
   "dependencies": {

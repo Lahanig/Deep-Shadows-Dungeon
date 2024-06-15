@@ -1,3 +1,4 @@
+var ks = require('node-key-sender')
 var keypress = require('keypress')
 
 export enum GameKey {
@@ -11,25 +12,34 @@ export enum GameKey {
 export class Controls {
     currentKeyPressed: GameKey
     currentKeyReleased: GameKey
+    playerLocale: string
 
     constructor() {
         this.currentKeyPressed = GameKey.Undefined
         this.currentKeyReleased = GameKey.Undefined
+        this.playerLocale = ""
+    }
+
+    getPlayerLocale(): string {
+        return this.playerLocale
     }
 
     getActiveControls(): GameKey | any {
         return this.currentKeyPressed
     }
 
-    clearKeyActiveKey() {
-        this.currentKeyPressed = this.getActiveControlsType("hh")
+    clearKeyActiveKey(): void {
+        this.currentKeyPressed = this.getActiveControlsType("none")
     }
 
-    async keypressF() {
+    async keypressF(): Promise<void> {
         try {
             keypress(process.stdin)
             process.stdin.on('keypress', async  (ch: any, key: any) => {
-                // console.log("got key", key)
+                this.playerLocale = "              Please change locale to en, for move character"
+                if (key === undefined) return
+                this.playerLocale = ""
+
                 this.currentKeyPressed = this.getActiveControlsType(key.name)
 
                 // setTimeout(() => {this.currentKeyPressed = this.getActiveControlsType("hh")}, 16.6)
@@ -37,12 +47,6 @@ export class Controls {
                     process.exit()
                 }
             })
-
-            process.stdin.on('keyrelease', async  (ch: any, key: any) => {
-                console.log("got key", key)
-                this.currentKeyPressed = this.getActiveControlsType("")
-            })
-
             
             process.stdin.setRawMode(true)
             process.stdin.resume()
@@ -51,7 +55,7 @@ export class Controls {
         }
     }
 
-    getActiveControlsType(key: string) {
+    getActiveControlsType(key: string): GameKey {
         switch (key) {
             case "w":
                 return GameKey.Up
