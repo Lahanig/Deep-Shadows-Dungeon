@@ -1,12 +1,12 @@
 {
   "name": "deep-shadows-dungeon",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "CLA RogueLike on typescript",
   "main": "./build/index.js",
   "bin": "./build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node .build/index.js",
+    "start": "node ./build/index.js",
     "dev": "tsc -w",
     "compile": "tsc",
     "build": "pkg -t node18-linux,node18-win --out-path ./dist ."

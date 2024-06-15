@@ -40,20 +40,20 @@ export class Core {
         this.updateTypedMap(this.player.x, this.player.y, " ")
         switch (this.controls.getActiveControls()) {
             case GameKey.Up:
-                if (this.player.collision(this.TypedMap[this.player.y-1][this.player.x]) !== true)
+                if (this.player.isCollision(this.TypedMap[this.player.y-1][this.player.x]) !== true)
                     this.player.y -= 1
                 break
             case GameKey.Down:
-                if (this.player.collision(this.TypedMap[this.player.y+1][this.player.x]) !== true)
+                if (this.player.isCollision(this.TypedMap[this.player.y+1][this.player.x]) !== true)
                     this.player.y += 1
                 break
             case GameKey.Left:
-                if (this.player.collision(this.TypedMap[this.player.y][this.player.x-1]) !== true)
+                if (this.player.isCollision(this.TypedMap[this.player.y][this.player.x-1]) !== true)
                     this.player.x -= 1
                 this.player.texture = texture[0]
                 break
             case GameKey.Right:
-                if (this.player.collision(this.TypedMap[this.player.y][this.player.x+1]) !== true)
+                if (this.player.isCollision(this.TypedMap[this.player.y][this.player.x+1]) !== true)
                     this.player.x += 1
                 this.player.texture = texture[1]
                 break
@@ -184,6 +184,7 @@ export class Renderer extends Core {
                 y.forEach(x => {
                     temp.UI.Map += x
                 })
+                
                 temp.UI.Map += "\n"
             })
 
@@ -192,7 +193,7 @@ export class Renderer extends Core {
             console.log(` `)
             console.log('  Level 1')
             console.log(temp.UI.Map)
-            console.log(` `, this.getCurrentTypedMap()[1][2])
+            console.log(this.getCurrentTypedMap()[1][2])
         }, this.gameLoop.timeout)
     }
 

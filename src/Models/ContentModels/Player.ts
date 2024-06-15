@@ -9,7 +9,7 @@ export class Player extends Entity {
         super(x, y, texture)
     }
 
-    collision(mapCell: TypedMapCell): boolean {
+    isCollision(mapCell: TypedMapCell): boolean {
         if (mapCell.type === GameEntityType.Air) return false
         return true
     }
