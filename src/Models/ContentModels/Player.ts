@@ -1,6 +1,6 @@
 import { Entity } from "../ABSModels/Entity"
 import { texture } from "../../../content/models/Player.json"
-import { GameEntityType, TypedMapCell } from "../../Core"
+import { TypedMapCell } from "../../Core"
 
 const model = { texture: texture }
 

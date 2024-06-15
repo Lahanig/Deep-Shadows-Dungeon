@@ -2,17 +2,13 @@ import { Player } from "../Models/ContentModels/Player.js"
 import { GameUI } from "../UI/index.js"
 import { Controls, GameKey } from "./GameControls.js"
 import { texture } from "../../content/models/Player.json"
-
-export enum GameEntityType {
-    Air,
-    Player,
-    Border,
-    Undefined
-}
+import { Renderer } from "./Renderer.js"
+import { GameEntityType } from "./Types/GameEntityType.js"
 
 export interface TypedMapCell {
     texture: string
     entityType: GameEntityType
+    originalEntityType: GameEntityType
 }
 
 export class Core {
@@ -37,8 +33,7 @@ export class Core {
     MapElementsHandler(): void {
         this.controls.keypressF()
 
-        this.updateTypedMap(this.player.x, this.player.y, " ")
-
+        this.updateTypedMap(this.player.x, this.player.y, this.getEntityTexture(this.TypedMap[this.player.y][this.player.x].originalEntityType)[0])
         switch (this.controls.getActiveControls()) {
             case GameKey.Up:
                 this.player.moveToPos(this.player.x, this.player.y-1, this.TypedMap)
@@ -78,11 +73,26 @@ export class Core {
             case "-": 
                 return GameEntityType.Border
             
-            case "@": 
+            case this.player.texture: 
                 return GameEntityType.Player
         
             default: return GameEntityType.Undefined
         } 
+    }
+
+    getEntityTexture(entityType: GameEntityType): string[] {
+        switch (entityType) {
+            case GameEntityType.Air:
+                return [" "]
+            
+            case GameEntityType.Border:
+                return ["/", "\\", "|", "-"]
+                
+            case GameEntityType.Player:
+                return [this.player.texture]
+
+            default: return ["U"]
+        }
     }
 
     getTypedMap(): TypedMapCell[][] {
@@ -90,7 +100,7 @@ export class Core {
 
         this.RawMap.forEach((y, i1) => {
             y.forEach((x, i2) => {
-                const cell: TypedMapCell = { texture: x, entityType: this.getEntityType(x) }
+                const cell: TypedMapCell = { texture: x, entityType: this.getEntityType(x), originalEntityType: this.getEntityType(x) }
 
                 TypedMap[i1][i2] = cell
             })
@@ -105,10 +115,10 @@ export class Core {
         return this.TypedMap
     }
 
-    updateTypedMap(x: number, y: number, texture: string): void {
+    updateTypedMap(x: number, y: number, texture: string, newOriginalEntityType?: GameEntityType): void {
         const newTypedMap = this.getCurrentTypedMap()
 
-        newTypedMap[y][x] = { texture: texture, entityType: this.getEntityType(texture) }
+        newTypedMap[y][x] = { texture: texture, entityType: this.getEntityType(texture), originalEntityType: !newOriginalEntityType ? newTypedMap[y][x].originalEntityType : newOriginalEntityType }
 
         this.TypedMap = newTypedMap
     }
@@ -134,67 +144,4 @@ export class Core {
     }
 }
 
-type GameLoop = {
-    timeout: number
-    interval: NodeJS.Timeout | null
-}
-
-export class Renderer extends Core {
-    windowWidth: Number
-    windowHeight: Number
-
-    gameLoop: GameLoop
-
-    UIMap: string[][]
-
-    constructor(w: Number = 640, h: Number = 480) {
-        super()
-        this.windowWidth = w
-        this.windowHeight = h
-
-        this.gameLoop = {
-            interval: null,
-            timeout: 16.6
-        }
-
-        this.UIMap = []
-    }
-
-    render(): void {
-        this.gameLoop.interval = setInterval(() => {
-            this.MapElementsHandler()
-
-            this.UIMap = this.getMap()
-
-            // this.controls.keypressF()
-
-            const temp = {
-                UI: {
-                    Map: ""
-                }
-            }
-
-            this.UIMap.forEach(y => {
-                y.forEach(x => {
-                    temp.UI.Map += x
-                })
-
-                temp.UI.Map += "\n"
-            })
-
-            console.clear()
-            console.log(`Deep Shadows Dungeon`)
-            console.log(` `)
-            console.log('  Level 1')
-            console.log(temp.UI.Map)
-            console.log(` `)
-            console.log(this.getCurrentTypedMap()[1][2], this.player.x, this.player.y)
-        }, this.gameLoop.timeout)
-    }
-
-    getUI() {
-        return {
-            map: this.UIMap
-        }
-    }
-}
+export { GameEntityType }

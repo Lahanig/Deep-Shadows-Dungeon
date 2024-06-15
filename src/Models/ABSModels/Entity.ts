@@ -1,4 +1,4 @@
-import { TypedMapCell, GameEntityType } from "../../Core"
+import { GameEntityType, TypedMapCell } from "../../Core"
 
 export abstract class Entity {
     x: number
@@ -22,7 +22,6 @@ export abstract class Entity {
     }
 
     getCollisionEntityType(mapCell: TypedMapCell): TypedMapCell["entityType"] {
-        if (!this.isCollision(mapCell)) return GameEntityType.Air
         return mapCell.entityType
     }
 
