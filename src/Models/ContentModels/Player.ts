@@ -9,8 +9,11 @@ export class Player extends Entity {
         super(x, y, texture)
     }
 
-    isCollision(mapCell: TypedMapCell): boolean {
-        if (mapCell.type === GameEntityType.Air) return false
-        return true
+    moveToPos(x: number, y: number, typedMap: TypedMapCell[][], texture?: string): void {
+        if (this.isCollision(typedMap[y][x]) === true) return
+
+        this.setPos(x, y)
+
+        if (texture) this.setTexture(texture)
     }
 }

@@ -12,7 +12,7 @@ export enum GameEntityType {
 
 export interface TypedMapCell {
     texture: string
-    type: GameEntityType
+    entityType: GameEntityType
 }
 
 export class Core {
@@ -38,28 +38,22 @@ export class Core {
         this.controls.keypressF()
 
         this.updateTypedMap(this.player.x, this.player.y, " ")
+
         switch (this.controls.getActiveControls()) {
             case GameKey.Up:
-                if (this.player.isCollision(this.TypedMap[this.player.y-1][this.player.x]) !== true)
-                    this.player.y -= 1
+                this.player.moveToPos(this.player.x, this.player.y-1, this.TypedMap)
                 break
             case GameKey.Down:
-                if (this.player.isCollision(this.TypedMap[this.player.y+1][this.player.x]) !== true)
-                    this.player.y += 1
+                this.player.moveToPos(this.player.x, this.player.y+1, this.TypedMap)
                 break
             case GameKey.Left:
-                if (this.player.isCollision(this.TypedMap[this.player.y][this.player.x-1]) !== true)
-                    this.player.x -= 1
-                this.player.texture = texture[0]
+                this.player.moveToPos(this.player.x-1, this.player.y, this.TypedMap, texture[0])
                 break
             case GameKey.Right:
-                if (this.player.isCollision(this.TypedMap[this.player.y][this.player.x+1]) !== true)
-                    this.player.x += 1
-                this.player.texture = texture[1]
+                this.player.moveToPos(this.player.x+1, this.player.y, this.TypedMap, texture[1])
                 break
             default: 
-                this.player.x += 0
-                this.player.y += 0
+                this.player.moveToPos(this.player.x, this.player.y, this.TypedMap)
                 break
         }
 
@@ -96,7 +90,7 @@ export class Core {
 
         this.RawMap.forEach((y, i1) => {
             y.forEach((x, i2) => {
-                const cell: TypedMapCell = { texture: x, type: this.getEntityType(x) }
+                const cell: TypedMapCell = { texture: x, entityType: this.getEntityType(x) }
 
                 TypedMap[i1][i2] = cell
             })
@@ -114,7 +108,7 @@ export class Core {
     updateTypedMap(x: number, y: number, texture: string): void {
         const newTypedMap = this.getCurrentTypedMap()
 
-        newTypedMap[y][x] = { texture: texture, type: this.getEntityType(texture) }
+        newTypedMap[y][x] = { texture: texture, entityType: this.getEntityType(texture) }
 
         this.TypedMap = newTypedMap
     }
@@ -184,7 +178,7 @@ export class Renderer extends Core {
                 y.forEach(x => {
                     temp.UI.Map += x
                 })
-                
+
                 temp.UI.Map += "\n"
             })
 
@@ -193,7 +187,8 @@ export class Renderer extends Core {
             console.log(` `)
             console.log('  Level 1')
             console.log(temp.UI.Map)
-            console.log(this.getCurrentTypedMap()[1][2])
+            console.log(` `)
+            console.log(this.getCurrentTypedMap()[1][2], this.player.x, this.player.y)
         }, this.gameLoop.timeout)
     }
 
