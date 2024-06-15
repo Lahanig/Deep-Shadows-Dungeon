@@ -49,11 +49,14 @@ export class Renderer extends Core {
             })
 
             console.clear()
-            console.log(`Deep Shadows Dungeon ${this.controls.getPlayerLocale()}`)
-            console.log(` `)
-            console.log('  Level 1')
-            console.log(temp.UI.Map)
-            console.log(` `)
+            //process.stdout.write("\u001b[2J\u001b[0;0H")
+            // process.stdout.write('\x1Bc')
+            console.log(`Deep Shadows Dungeon ${this.controls.getPlayerLocale()} \n`,
+                `\n`,
+                `  Level 1\n${temp.UI.Map.slice(0, -3)}`,
+                `\n`,
+                `  Debug`
+            )
             console.log(this.getCurrentTypedMap()[1][2], this.player.x, this.player.y)
         }, this.gameLoop.timeout)
     }
