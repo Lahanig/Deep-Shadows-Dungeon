@@ -5,6 +5,7 @@ import { texture } from "../../content/models/Player.json"
 import { Renderer } from "./Renderer.js"
 import { GameEntityType } from "./Types/GameEntityType.js"
 import { GameEntityDiraction } from "./Types/GameEntityDiraction.js"
+import { randomInt } from "crypto"
 
 export interface TypedMapCell {
     texture: string
@@ -75,7 +76,7 @@ export class Core {
                 return GameEntityType.Border
             
             case this.player.texture: 
-                return GameEntityType.Player
+                return this.player.type
         
             default: return GameEntityType.Undefined
         } 
@@ -89,7 +90,7 @@ export class Core {
             case GameEntityType.Border:
                 return ["/", "\\", "|", "-"]
                 
-            case GameEntityType.Player:
+            case this.player.type:
                 return [this.player.texture]
 
             default: return ["U"]
@@ -145,4 +146,4 @@ export class Core {
     }
 }
 
-export { GameEntityType, GameEntityDiraction }
+export { GameEntityType, GameEntityDiraction, randomInt }
