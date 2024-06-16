@@ -4,6 +4,7 @@ import { Controls, GameKey } from "./GameControls.js"
 import { texture } from "../../content/models/Player.json"
 import { Renderer } from "./Renderer.js"
 import { GameEntityType } from "./Types/GameEntityType.js"
+import { GameEntityDiraction } from "./Types/GameEntityDiraction.js"
 
 export interface TypedMapCell {
     texture: string
@@ -36,16 +37,16 @@ export class Core {
         this.updateTypedMap(this.player.x, this.player.y, this.getEntityTexture(this.TypedMap[this.player.y][this.player.x].originalEntityType)[0])
         switch (this.controls.getActiveControls()) {
             case GameKey.Up:
-                this.player.moveToPos(this.player.x, this.player.y-1, this.TypedMap)
+                this.player.moveToPos(this.player.x, this.player.y-1, this.TypedMap, GameEntityDiraction.Top)
                 break
             case GameKey.Down:
-                this.player.moveToPos(this.player.x, this.player.y+1, this.TypedMap)
+                this.player.moveToPos(this.player.x, this.player.y+1, this.TypedMap, GameEntityDiraction.Bottom)
                 break
             case GameKey.Left:
-                this.player.moveToPos(this.player.x-1, this.player.y, this.TypedMap, texture[0])
+                this.player.moveToPos(this.player.x-1, this.player.y, this.TypedMap, GameEntityDiraction.Left, texture[0])
                 break
             case GameKey.Right:
-                this.player.moveToPos(this.player.x+1, this.player.y, this.TypedMap, texture[1])
+                this.player.moveToPos(this.player.x+1, this.player.y, this.TypedMap, GameEntityDiraction.Right, texture[1])
                 break
             default: 
                 this.player.moveToPos(this.player.x, this.player.y, this.TypedMap)
@@ -144,4 +145,4 @@ export class Core {
     }
 }
 
-export { GameEntityType }
+export { GameEntityType, GameEntityDiraction }
