@@ -13,11 +13,7 @@ export class Player extends Entity {
     }
 
     collision(x: number, y: number, mapCell: TypedMapCell[][]): void {
-        switch (mapCell[y][x].entityType) {
-            case GameEntityType.Air:
-                // this.money += randomInt(0, 5)
-                break
-        }
+        mapCell[y][x].entity.collision(x, y, mapCell, this)
     }
 
     moveToPos(x: number, y: number, typedMap: TypedMapCell[][], diraction: GameEntityDiraction = this.diraction, texture: string = this.texture): void {

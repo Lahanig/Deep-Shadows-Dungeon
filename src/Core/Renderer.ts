@@ -40,8 +40,8 @@ export class Renderer extends Core {
                 }
             }
 
-            this.UIMap.forEach(y => {
-                y.forEach(x => {
+            this.UIMap.some(y => {
+                y.some(x => {
                     temp.UI.Map += x
                 })
 
@@ -55,9 +55,9 @@ export class Renderer extends Core {
                 `\n`,
                 `  Level 1            HP:${this.player.hp}           Coins:${this.player.money}\n${temp.UI.Map.slice(0, -3)}`,
                 `\n`,
-                `  Debug`
+                `  Floor 1, Debug`
             )
-            console.log(this.getCurrentTypedMap()[1][2], this.player.x, this.player.y, this.player.diraction)
+            console.log(this.getCurrentTypedMap()[4][11].texture, this.getCurrentTypedMap()[4][11].originalEntityType, this.getCurrentTypedMap()[4][11].entity, this.player.x, this.player.y, this.player.diraction)
         }, this.gameLoop.timeout)
     }
 

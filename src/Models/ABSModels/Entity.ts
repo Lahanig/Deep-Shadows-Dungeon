@@ -2,6 +2,10 @@ import { GameEntityType, TypedMapCell, GameEntityDiraction, randomInt } from "..
 import { GameEntityLifeState } from "../../Core/Types/GameEntityLifeState"
 import { Player } from "../ContentModels/Player"
 
+export interface Constructable<T> {
+    new(x: number, y: number) : T
+}
+
 export abstract class Entity {
     hp: number
     x: number
@@ -37,12 +41,16 @@ export abstract class Entity {
     }
 
     isCollision(mapCell: TypedMapCell): boolean {
-        if (mapCell.entityType === GameEntityType.Spike || 
-            mapCell.entityType === GameEntityType.Money || 
-            mapCell.entityType === GameEntityType.Air
-            ) 
-            return false
-        return true
+        switch (mapCell.entityType) {
+            case GameEntityType.Air:
+                return false
+            case GameEntityType.Money:
+                return false
+            case GameEntityType.Spike:
+                return false
+        
+            default: return true
+        }
     }
 
     getCollisionEntityType(mapCell: TypedMapCell): TypedMapCell["entityType"] {
