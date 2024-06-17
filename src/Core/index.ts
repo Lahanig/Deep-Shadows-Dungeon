@@ -23,6 +23,7 @@ export interface TypedMapCell {
 
 export interface GameConfig {
     Debug: boolean
+    MapRender: boolean
 }
 
 export class Core {

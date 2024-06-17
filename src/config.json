@@ -1,3 +1,4 @@
 {
-    "Debug": false
+    "Debug": false,
+    "MapRender": true
 }
