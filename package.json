@@ -1,15 +1,28 @@
 {
   "name": "deep-shadows-dungeon",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "CLA RogueLike on typescript",
   "main": "./build/index.js",
   "bin": "./build/index.js",
+  "pkg": {
+    "assets": [
+      "content/**/*"
+    ],
+    "scripts": [
+      "build/**/*.js"
+    ],
+    "targets": [
+      "node18-linux",
+      "node18-win"
+    ],
+    "outputPath": "./dist"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./build/index.js",
     "dev": "tsc -w",
     "compile": "tsc",
-    "build": "pkg -t node18-linux,node18-win --out-path ./dist ."
+    "build": "pkg --config ./package.json ./build/index.js"
   },
   "keywords": [
     "Game",
@@ -23,6 +36,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "boxednode": "^2.4.3",
     "keypress": "^0.2.1",
     "nodemon": "^3.1.3",
     "pkg": "^5.8.1"

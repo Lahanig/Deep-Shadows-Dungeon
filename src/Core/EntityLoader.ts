@@ -2,6 +2,7 @@ import { path, fs } from "."
 import { floor1 } from "../../content/floors/FloorTemplate.json"
 import { Constructable, Entity } from "../Models/ABSModels/Entity"
 import { Border } from "../Models/ContentModels/Border"
+import Models from "../Models/Requirement"
 
 export class EntityLoader {
     rawMap: string[][]
@@ -15,13 +16,22 @@ export class EntityLoader {
     loadEnitityModels(): void {
         this.entityModels = []
 
-        const foldersPath = path.join(__dirname, '../Models/ContentModels')
-        const entityModelFiles = fs.readdirSync(foldersPath).filter(file => file.endsWith('.js'))
+        // No build code...
 
-        for (const file of entityModelFiles) {
-            const filePath = path.join(foldersPath, file)
-            const rawEntityModel = require(filePath)
-            const entityModel: any = Object["values"](rawEntityModel)[0]
+        // const foldersPath = path.join(__dirname, '../Models/ContentModels')
+        // const entityModelFiles = fs.readdirSync(foldersPath).filter(file => file.endsWith('.js'))
+
+        // for (const file of entityModelFiles) {
+        //     const filePath = path.join(foldersPath, file)
+
+        //     const rawEntityModel = require(filePath)
+        //     const entityModel: any = Object["values"](rawEntityModel)[0]
+
+        //     this.entityModels.push(entityModel)
+        // }
+        
+        for (const model of Object["values"](Models)) {
+            const entityModel: any = model
 
             this.entityModels.push(entityModel)
         }

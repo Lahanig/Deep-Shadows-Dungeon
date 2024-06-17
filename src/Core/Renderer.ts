@@ -55,9 +55,10 @@ export class Renderer extends Core {
                 `\n`,
                 `  Level 1            HP:${this.player.hp}           Coins:${this.player.money}\n${temp.UI.Map.slice(0, -3)}`,
                 `\n`,
-                `  Floor 1, Debug`
+                `  Floor 1${this.config.Debug === true ? ", Debug" : " "}`
             )
-            console.log(this.getCurrentTypedMap()[4][11].texture, this.getCurrentTypedMap()[4][11].originalEntityType, this.getCurrentTypedMap()[4][11].entity, this.player.x, this.player.y, this.player.diraction)
+            if (this.config.Debug === true)
+                console.log(this.getCurrentTypedMap()[4][11].texture, this.getCurrentTypedMap()[4][11].originalEntityType, this.getCurrentTypedMap()[4][11].entity, this.player.x, this.player.y, this.player.diraction)
         }, this.gameLoop.timeout)
     }
 

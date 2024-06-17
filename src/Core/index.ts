@@ -12,6 +12,7 @@ import { entityLoader, EntityLoader } from "./EntityLoader.js"
 import { Entity } from "../Models/ABSModels/Entity.js"
 import { GameEntityLifeState } from "./Types/GameEntityLifeState.js"
 import { Air } from "../Models/ContentModels/Air.js"
+import config from "../config.json"
 
 export interface TypedMapCell {
     texture: string
@@ -20,12 +21,18 @@ export interface TypedMapCell {
     entity: Entity
 }
 
+export interface GameConfig {
+    Debug: boolean
+}
+
 export class Core {
     renderer: Renderer | null
     entityLoader: EntityLoader
     controls: Controls
 
     loadedEntites: Entity[]
+
+    config: GameConfig
 
     player: Player
 
@@ -40,6 +47,8 @@ export class Core {
         this.player = new Player(3, 2)
 
         this.loadedEntites = entityLoader.getFloorEntites()
+
+        this.config = config
 
         this.RawMap = new GameUI().getMap()
         this.TypedMap = this.getTypedMap()
