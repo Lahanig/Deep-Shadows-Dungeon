@@ -13,11 +13,13 @@ export class Controls {
     currentKeyPressed: GameKey
     currentKeyReleased: GameKey
     playerLocale: string
+    keyReleaseTimeout: NodeJS.Timeout | undefined
 
     constructor() {
         this.currentKeyPressed = GameKey.Undefined
         this.currentKeyReleased = GameKey.Undefined
         this.playerLocale = ""
+        this.keyReleaseTimeout = undefined
     }
 
     getPlayerLocale(): string {
@@ -50,13 +52,19 @@ export class Controls {
             process.stdin.setRawMode(true)
 
         process.stdin.on('keypress', (chunk, key) => {
-            this.setActiveKey("none")
+            this.clearKeyActiveKey()
 
             if (key.name !== undefined) this.setLocale()
             else this.setLocale(true)
 
             if (key) {
                 this.setActiveKey(key.name)
+
+                clearInterval(this.keyReleaseTimeout)
+
+                this.keyReleaseTimeout = setTimeout(() => {
+                    this.clearKeyActiveKey()
+                }, 6.94)
             }
 
             if (key && key.ctrl && key.name == 'c') {

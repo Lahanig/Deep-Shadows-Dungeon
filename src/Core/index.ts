@@ -76,7 +76,7 @@ export class Core {
                 break
         }
 
-        this.controls.clearKeyActiveKey()
+        // this.controls.clearKeyActiveKey()
         this.updateTypedMap(this.player.x, this.player.y, this.player)
     }
 
