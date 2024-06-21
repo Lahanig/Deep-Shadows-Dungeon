@@ -3,7 +3,7 @@ import path from "node:path"
 import { randomInt } from "crypto"
 import { Player } from "../Models/ContentModels/Player.js"
 import { GameUI } from "../UI/index.js"
-import { Controls, GameKey } from "./GameControls.js"
+import { Controls, GameControls, GameKey } from "./GameControls.js"
 import { texture } from "../../content/models/Player.json"
 import { Renderer } from "./Renderer.js"
 import { GameEntityType } from "./Types/GameEntityType.js"
@@ -18,7 +18,7 @@ export interface TypedMapCell {
     texture: string
     entityType: GameEntityType
     originalEntityType: GameEntityType
-    entity: Entity
+    // entity: Entity
 }
 
 export interface GameConfig {
@@ -42,7 +42,7 @@ export class Core {
 
     constructor(renderer: Renderer | null = null) {
         this.renderer = renderer
-        this.controls = new Controls()
+        this.controls = GameControls
         this.entityLoader = entityLoader
 
         this.player = new Player(3, 2)
@@ -56,24 +56,23 @@ export class Core {
     }
 
     MapElementsHandler(): void {
-        this.controls.keypressF()
-
         this.updateTypedMap(this.player.x, this.player.y, this.getEntityByType(this.TypedMap[this.player.y][this.player.x].originalEntityType))
+        // this.updateTypedMap(this.player.x, this.player.y, new Air(this.player.x, this.player.y))
         switch (this.controls.getActiveControls()) {
             case GameKey.Up:
-                this.player.moveToPos(this.player.x, this.player.y-1, this.TypedMap, GameEntityDiraction.Top)
+                this.player.moveToPos(this.player.x, this.player.y-1, this.TypedMap, this.loadedEntites, GameEntityDiraction.Top)
                 break
             case GameKey.Down:
-                this.player.moveToPos(this.player.x, this.player.y+1, this.TypedMap, GameEntityDiraction.Bottom)
+                this.player.moveToPos(this.player.x, this.player.y+1, this.TypedMap, this.loadedEntites, GameEntityDiraction.Bottom)
                 break
             case GameKey.Left:
-                this.player.moveToPos(this.player.x-1, this.player.y, this.TypedMap, GameEntityDiraction.Left, texture[0])
+                this.player.moveToPos(this.player.x-1, this.player.y, this.TypedMap, this.loadedEntites, GameEntityDiraction.Left, texture[0])
                 break
             case GameKey.Right:
-                this.player.moveToPos(this.player.x+1, this.player.y, this.TypedMap, GameEntityDiraction.Right, texture[1])
+                this.player.moveToPos(this.player.x+1, this.player.y, this.TypedMap, this.loadedEntites, GameEntityDiraction.Right, texture[1])
                 break
             default: 
-                this.player.moveToPos(this.player.x, this.player.y, this.TypedMap)
+                this.player.moveToPos(this.player.x, this.player.y, this.TypedMap, this.loadedEntites)
                 break
         }
 
@@ -81,13 +80,23 @@ export class Core {
         this.updateTypedMap(this.player.x, this.player.y, this.player)
     }
 
+    getMapEntityByCoord(x: number, y: number): Entity {
+        const result: Entity[] = []
+
+        this.loadedEntites.some((loadedEntity, i) => {
+            if (loadedEntity.x === x && loadedEntity.y === y) return result.push(this.loadedEntites[i])
+        })
+
+        return result[0]
+    }
+
     getEntityByType(entityType: GameEntityType): Entity {
         // this.loadedEntites = entityLoader.getFloorEntites()
 
         const result: Entity[] = []
 
-        this.loadedEntites.some(entity => {
-            if (entity.type === entityType) return result.push(entity)
+        this.loadedEntites.some((entity, i) => {
+            if (entity.type === entityType) return result.push(this.loadedEntites[i])
         })
 
         // console.log(result)
@@ -105,7 +114,6 @@ export class Core {
                             texture: entity.texture, 
                             entityType: entity.type, 
                             originalEntityType: entity.lifeState !== GameEntityLifeState.Death ? entity.type : GameEntityType.Air, 
-                            entity: entity 
                         }
 
                         return TypedMap[i1][i2] = cell
@@ -126,39 +134,42 @@ export class Core {
     }
 
     checkDeathEntity(): void {
-        this.TypedMap.some((y, i1) => {
+        this.TypedMap .some((y, i1) => {
             y.some((x, i2) => {
-                if (x.entity.lifeState === GameEntityLifeState.Death) {
-                    x.entity = new Air(x.entity.x, x.entity.y)
-                    x.originalEntityType = GameEntityType.Air
-                    x.entityType = x.entity.type
-                    x.texture = x.entity.texture
+                let mapEntity = this.getMapEntityByCoord(i2, i1)
+                if (mapEntity.lifeState === GameEntityLifeState.Death) { 
+                    this.loadedEntites.some((loadedEntity, i) => {
+                        if (loadedEntity.id === mapEntity.id) {
+                            this.loadedEntites[i] = new Air(mapEntity.x, mapEntity.y, mapEntity.id)
+                            return mapEntity = this.loadedEntites[i]
+                        }
+                    })
+
+                    this.TypedMap[i1][i2].originalEntityType = GameEntityType.Air
+                    this.TypedMap[i1][i2].entityType = mapEntity.type
+                    this.TypedMap[i1][i2].texture = mapEntity.texture
                 }
             })
         })
     }
 
     updateTypedMap(x: number, y: number, entity?: Entity, texture?: string, newOriginalEntityType?: GameEntityType): void {
-        const newTypedMap = this.getCurrentTypedMap()
-
-        const Entity = !entity ? newTypedMap[y][x].entity : entity
+        const mapEntity = this.getMapEntityByCoord(x, y)
+        const Entity = !entity ? mapEntity : entity
 
         // if (Entity.lifeState === GameEntityLifeState.Death) newOriginalEntityType = GameEntityType.Air
 
-        newTypedMap[y][x] = { 
+        this.TypedMap[y][x] = { 
             texture: !texture ? Entity.texture : texture, 
             entityType: Entity.type, 
-            originalEntityType: !newOriginalEntityType ? newTypedMap[y][x].originalEntityType : newOriginalEntityType, 
-            entity: Entity
+            originalEntityType: !newOriginalEntityType ? this.TypedMap[y][x].originalEntityType : newOriginalEntityType, 
         }
-
-        this.TypedMap = newTypedMap
     }
 
     getMap(): string[][] {
         const simpleMap: string[][] = [[]]
 
-        this.TypedMap.some((y, i1) => {
+        this.getCurrentTypedMap().some((y, i1) => {
             y.some((x, i2) => {
                 const cell: string = x.texture
 
@@ -172,6 +183,8 @@ export class Core {
     }
 
     start(): void {
+        this.controls.setKeypressListener()
+
         if (this.renderer) this.renderer.render()
     }
 }

@@ -1,7 +1,6 @@
 import { path, fs } from "."
 import { floor1 } from "../../content/floors/FloorTemplate.json"
 import { Constructable, Entity } from "../Models/ABSModels/Entity"
-import { Border } from "../Models/ContentModels/Border"
 import Models from "../Models/Requirement"
 
 export class EntityLoader {
@@ -37,6 +36,22 @@ export class EntityLoader {
         }
     }
 
+    _getEntityModel(rawEntity: string, rawEntityX: number, rawEntityY: number): Entity {
+        const result: Entity[] = []
+
+        this.entityModels.some(entityModel => {
+            if (rawEntity === "\\" || rawEntity === "/" || rawEntity === "|" || rawEntity === "-") {
+                return result.push(new Models.Border(rawEntityX, rawEntityY, rawEntity)) 
+            }
+
+            if (new entityModel(rawEntityY, rawEntityX).texture === rawEntity) {
+                return result.push(new entityModel(rawEntityX, rawEntityY))
+            }
+        })
+
+        return result[0]
+    }
+
     getFloorEntites(): Entity[] {
         this.loadEnitityModels()
 
@@ -44,19 +59,13 @@ export class EntityLoader {
 
         floor1.some((y, i1) => {
             y.some((x, i2) => {
-                this.entityModels.some(entityModel => {
-                    if (new entityModel(i2, i1).texture === x) {
-                        return Entites.push(new entityModel(i2, i1)) 
-                    }
-
-                    if (x === "\\" || x === "/" || x === "|" || x === "-") {
-                        return Entites.push(new Border(i2, i1, x)) 
-                    }
-                })
+                const newEntity = this._getEntityModel(x, i2, i1)
+                newEntity.id = Entites.length
+                Entites.push(newEntity)
             })
         })
 
-        // console.log(Entites)
+        // console.log(Entites.length)
         return Entites
     }
 }

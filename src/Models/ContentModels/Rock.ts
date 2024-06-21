@@ -12,7 +12,7 @@ export class Rock extends Entity {
         this.isAttack = false
     }
 
-    collision(x: number, y: number, mapCell: TypedMapCell[][], player: Player): void  {
+    collision(x: number, y: number, mapCell: TypedMapCell[][], loadedEntites: null, player: Player): void  {
         if (this.isAttack === false) {
            player.hp -= 5 
            this.isAttack = true

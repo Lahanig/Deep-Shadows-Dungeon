@@ -32,10 +32,43 @@ export class Controls {
         this.currentKeyPressed = this.getActiveControlsType("none")
     }
 
+    setLocale(flag: boolean = false): void {
+        if (flag === true) this.playerLocale = "              Please change locale to en, for move character"
+        else this.playerLocale = ""
+    }
+
+    setActiveKey(key: string): void {
+        this.currentKeyPressed = this.getActiveControlsType(key)
+    }
+
+    async setKeypressListener(): Promise<void> {
+        var readline = require('readline')
+
+        readline.emitKeypressEvents(process.stdin)
+
+        if (process.stdin.isTTY)
+            process.stdin.setRawMode(true)
+
+        process.stdin.on('keypress', (chunk, key) => {
+            this.setActiveKey("none")
+
+            if (key.name !== undefined) this.setLocale()
+            else this.setLocale(true)
+
+            if (key) {
+                this.setActiveKey(key.name)
+            }
+
+            if (key && key.ctrl && key.name == 'c') {
+                process.exit()
+            }
+        })
+    }
+
     async keypressF(): Promise<void> {
         try {
             keypress(process.stdin)
-            process.stdin.on('keypress', async  (ch: any, key: any) => {
+            process.stdin.on('keypress', async (ch: any, key: any) => {
                 this.playerLocale = "              Please change locale to en, for move character"
                 if (key === undefined) return
                 this.playerLocale = ""
@@ -44,12 +77,13 @@ export class Controls {
 
                 // setTimeout(() => {this.currentKeyPressed = this.getActiveControlsType("hh")}, 16.6)
                 if (key && key.ctrl && key.name == 'c') {
+                    console.log(1)
                     process.exit()
                 }
             })
-            
+
             process.stdin.setRawMode(true)
-            process.stdin.resume()
+            // process.stdin.resume()
         } catch(e) {
             console.log(e)
         }
@@ -64,9 +98,20 @@ export class Controls {
             case "a":
                 return GameKey.Left
             case "d":
-                return GameKey.Right       
+                return GameKey.Right 
+
+            case "ц":
+                return GameKey.Up
+            case "ы":
+                return GameKey.Down     
+            case "ф":
+                return GameKey.Left 
+            case "в":
+                return GameKey.Right
         
             default: return GameKey.Undefined
         }
     }
 }
+
+export const GameControls = new Controls()

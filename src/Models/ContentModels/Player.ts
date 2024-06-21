@@ -12,14 +12,16 @@ export class Player extends Entity {
         this.type = GameEntityType.Player
     }
 
-    collision(x: number, y: number, mapCell: TypedMapCell[][]): void {
-        mapCell[y][x].entity.collision(x, y, mapCell, this)
+    collision(x: number, y: number, mapCell: TypedMapCell[][], loadedEntites: Entity[]): void {
+        loadedEntites.some(loadedEntity => {
+            if (loadedEntity.x === x && loadedEntity.y === y) return loadedEntity.collision(x, y, mapCell, null, this)
+        })
     }
 
-    moveToPos(x: number, y: number, typedMap: TypedMapCell[][], diraction: GameEntityDiraction = this.diraction, texture: string = this.texture): void {
+    moveToPos(x: number, y: number, typedMap: TypedMapCell[][], loadedEntites: Entity[], diraction: GameEntityDiraction = this.diraction, texture: string = this.texture): void {
         if (this.isCollision(typedMap[y][x]) === true) return
 
-        this.collision(x, y, typedMap)
+        this.collision(x, y, typedMap, loadedEntites)
         this.setDiraction(diraction)
         this.setPos(x, y)
         this.setTexture(texture)

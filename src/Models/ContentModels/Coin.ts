@@ -10,7 +10,7 @@ export class Coin extends Entity {
         this.type = GameEntityType.Money
     }
 
-    collision(x: number, y: number, mapCell: TypedMapCell[][], player: Player): void {
+    collision(x: number, y: number, mapCell: TypedMapCell[][], loadedEntites: null, player: Player): void {
         if (this.lifeState === GameEntityLifeState.Alive) player.money += this.money
         this.lifeState = GameEntityLifeState.Death
     }
