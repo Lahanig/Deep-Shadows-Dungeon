@@ -20,7 +20,7 @@ export class Renderer extends Core {
 
         this.gameLoop = {
             interval: null,
-            timeout: 6.94
+            timeout: this.controls.freshRate
         }
 
         this.UIMap = []

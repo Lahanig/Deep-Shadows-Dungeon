@@ -1,5 +1,6 @@
 var ks = require('node-key-sender')
 var keypress = require('keypress')
+var readline = require('readline')
 
 export enum GameKey {
     Up,
@@ -14,12 +15,14 @@ export class Controls {
     currentKeyReleased: GameKey
     playerLocale: string
     keyReleaseTimeout: NodeJS.Timeout | undefined
+    freshRate: number
 
     constructor() {
         this.currentKeyPressed = GameKey.Undefined
         this.currentKeyReleased = GameKey.Undefined
         this.playerLocale = ""
         this.keyReleaseTimeout = undefined
+        this.freshRate = 4.16
     }
 
     getPlayerLocale(): string {
@@ -44,8 +47,6 @@ export class Controls {
     }
 
     async setKeypressListener(): Promise<void> {
-        var readline = require('readline')
-
         readline.emitKeypressEvents(process.stdin)
 
         if (process.stdin.isTTY)
@@ -64,7 +65,7 @@ export class Controls {
 
                 this.keyReleaseTimeout = setTimeout(() => {
                     this.clearKeyActiveKey()
-                }, 6.94)
+                }, this.freshRate)
             }
 
             if (key && key.ctrl && key.name == 'c') {
@@ -73,29 +74,28 @@ export class Controls {
         })
     }
 
-    async keypressF(): Promise<void> {
-        try {
-            keypress(process.stdin)
-            process.stdin.on('keypress', async (ch: any, key: any) => {
-                this.playerLocale = "              Please change locale to en, for move character"
-                if (key === undefined) return
-                this.playerLocale = ""
+    // async keypressF(): Promise<void> {
+    //     try {
+    //         keypress(process.stdin)
+    //         process.stdin.on('keypress', async (ch: any, key: any) => {
+    //             this.playerLocale = "              Please change locale to en, for move character"
+    //             if (key === undefined) return
+    //             this.playerLocale = ""
 
-                this.currentKeyPressed = this.getActiveControlsType(key.name)
+    //             this.currentKeyPressed = this.getActiveControlsType(key.name)
 
-                // setTimeout(() => {this.currentKeyPressed = this.getActiveControlsType("hh")}, 16.6)
-                if (key && key.ctrl && key.name == 'c') {
-                    console.log(1)
-                    process.exit()
-                }
-            })
+    //             if (key && key.ctrl && key.name == 'c') {
+    //                 console.log(1)
+    //                 process.exit()
+    //             }
+    //         })
 
-            process.stdin.setRawMode(true)
-            // process.stdin.resume()
-        } catch(e) {
-            console.log(e)
-        }
-    }
+    //         process.stdin.setRawMode(true)
+    //         process.stdin.resume()
+    //     } catch(e) {
+    //         console.log(e)
+    //     }
+    // }
 
     getActiveControlsType(key: string): GameKey {
         switch (key) {

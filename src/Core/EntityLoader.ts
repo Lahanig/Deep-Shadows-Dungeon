@@ -1,14 +1,15 @@
 import { path, fs } from "."
-import { floor1 } from "../../content/floors/FloorTemplate.json"
+import progress from "../progress.json"
 import { Constructable, Entity } from "../Models/ABSModels/Entity"
 import Models from "../Models/Requirement"
+import { GameMapLoader } from "./GameMapLoader"
 
 export class EntityLoader {
     rawMap: string[][]
     entityModels: Constructable<Entity>[]
 
     constructor() {
-        this.rawMap = floor1
+        this.rawMap = GameMapLoader.getCurrentMap()
         this.entityModels = []
     }
 
@@ -57,16 +58,53 @@ export class EntityLoader {
 
         const Entites: Entity[] = []
 
-        floor1.some((y, i1) => {
-            y.some((x, i2) => {
-                const newEntity = this._getEntityModel(x, i2, i1)
-                newEntity.id = Entites.length
-                Entites.push(newEntity)
+        console.log(progress.currentLoadedEntites.length)
+
+        if (progress.currentLoadedEntites.length <= 1) {
+            const Entites: Entity[] = []
+
+            this.rawMap.some((y, i1) => {
+                y.some((x, i2) => {
+                    const newEntity = this._getEntityModel(x, i2, i1)
+                    newEntity.id = Entites.length
+                    Entites.push(newEntity)
+                })
             })
+
+            const Progress: any = Entites
+
+            progress.currentLoadedEntites = Progress
+
+            const UpdateProgress = JSON.stringify(progress)
+
+            fs.writeFile(path.join(__dirname, '../progress.json'), UpdateProgress, (err) => {
+                if (err) {
+                    console.log('Error writing file:', err)
+                } else {
+                    console.log('Successfully wrote file')
+                }
+            })
+        }
+
+        progress.currentLoadedEntites.some((entity: Entity, i) => {
+            const newEntity = this._getEntityModel(entity.texture, entity.x, entity.y)
+
+            newEntity.id = Entites.length
+            newEntity.diraction = entity.diraction
+            newEntity.hp = entity.hp
+            newEntity.money = entity.money
+            newEntity.lifeState = entity.lifeState
+            
+            Entites.push(newEntity)
         })
 
+        const Progress: any = Entites
+
+        progress.currentLoadedEntites = Progress
+
         // console.log(Entites.length)
-        return Entites
+
+        return progress.currentLoadedEntites
     }
 }
 
