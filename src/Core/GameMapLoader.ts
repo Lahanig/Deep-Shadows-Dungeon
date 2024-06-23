@@ -1,32 +1,36 @@
 import { fs, path } from "."
 import { floor1 } from "../../content/floors/FloorTemplate.json"
-import progress from "../progress.json"
+import { GameSavesLoader, SavesLoader } from "./SavesLoader"
+
+
+interface MapLoaderCurrentMap {
+    map: string[][]
+    name: string
+}
 
 export class MapLoader {
-    currentMap: string[][]
+    currentMap: MapLoaderCurrentMap
+    saveLoader: SavesLoader
 
     constructor() {
-        this.currentMap = []
+        this.currentMap = {
+            map: [],
+            name: ''
+        }
+
+        this.saveLoader = GameSavesLoader
 
         this.setCurrentMap()
     }
 
     updateCurrentMap(): void {
-        this.currentMap = floor1
+        this.currentMap.map = floor1
     }
 
     setCurrentMap(): void {
-        progress.currentMap.name = "floor1"
+        this.currentMap.name = "floor1"
 
-        const UpdateProgress = JSON.stringify(progress)
-
-        fs.writeFile(path.join(__dirname, '../progress.json'), UpdateProgress, (err) => {
-            if (err) {
-                console.log('Error writing file:', err)
-            } else {
-                console.log('Successfully wrote file')
-            }
-        })
+        this.saveLoader.setProgressMap(this.currentMap.name)
 
         this.updateCurrentMap()
     }
@@ -34,7 +38,7 @@ export class MapLoader {
     getCurrentMap(): string[][] {
         this.updateCurrentMap()
 
-        return this.currentMap
+        return this.currentMap.map
     }
 }
 

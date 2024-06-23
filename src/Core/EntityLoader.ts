@@ -3,14 +3,17 @@ import progress from "../progress.json"
 import { Constructable, Entity } from "../Models/ABSModels/Entity"
 import Models from "../Models/Requirement"
 import { GameMapLoader } from "./GameMapLoader"
+import { GameSavesLoader, SavesLoader } from "./SavesLoader"
 
 export class EntityLoader {
     rawMap: string[][]
     entityModels: Constructable<Entity>[]
+    savesLoader: SavesLoader
 
     constructor() {
         this.rawMap = GameMapLoader.getCurrentMap()
         this.entityModels = []
+        this.savesLoader = GameSavesLoader
     }
 
     loadEnitityModels(): void {
@@ -58,7 +61,7 @@ export class EntityLoader {
 
         const Entites: Entity[] = []
 
-        console.log(progress.currentLoadedEntites.length)
+        // console.log(progress.currentLoadedEntites.length)
 
         if (progress.currentLoadedEntites.length <= 1) {
             const Entites: Entity[] = []
@@ -71,22 +74,10 @@ export class EntityLoader {
                 })
             })
 
-            const Progress: any = Entites
-
-            progress.currentLoadedEntites = Progress
-
-            const UpdateProgress = JSON.stringify(progress)
-
-            fs.writeFile(path.join(__dirname, '../progress.json'), UpdateProgress, (err) => {
-                if (err) {
-                    console.log('Error writing file:', err)
-                } else {
-                    console.log('Successfully wrote file')
-                }
-            })
+            this.savesLoader.setProgressEntitesLoaded(Entites)
         }
 
-        progress.currentLoadedEntites.some((entity: Entity, i) => {
+        this.savesLoader.getProgressEntitesLoaded().some((entity: Entity, i) => {
             const newEntity = this._getEntityModel(entity.texture, entity.x, entity.y)
 
             newEntity.id = Entites.length
@@ -98,13 +89,11 @@ export class EntityLoader {
             Entites.push(newEntity)
         })
 
-        const Progress: any = Entites
-
-        progress.currentLoadedEntites = Progress
-
+        this.savesLoader.setProgressEntitesLoaded(Entites)
+        
         // console.log(Entites.length)
 
-        return progress.currentLoadedEntites
+        return Entites
     }
 }
 
