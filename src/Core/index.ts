@@ -13,6 +13,7 @@ import { Entity } from "../Models/ABSModels/Entity.js"
 import { GameEntityLifeState } from "./Types/GameEntityLifeState.js"
 import { Air } from "../Models/ContentModels/Air.js"
 import config from "../config.json"
+import { GameSavesLoader, SavesLoader } from "./SavesLoader.js"
 
 export interface TypedMapCell {
     texture: string
@@ -30,6 +31,7 @@ export class Core {
     renderer: Renderer | null
     entityLoader: EntityLoader
     controls: Controls
+    savesLoader: SavesLoader
 
     loadedEntites: Entity[]
 
@@ -44,8 +46,10 @@ export class Core {
         this.renderer = renderer
         this.controls = GameControls
         this.entityLoader = entityLoader
+        this.savesLoader = GameSavesLoader
 
-        this.player = new Player(3, 2)
+        this.player = new Player(0, 0)
+        this.setPlayerStat()
 
         this.loadedEntites = entityLoader.getFloorEntites()
 
@@ -55,29 +59,60 @@ export class Core {
         this.TypedMap = this.getTypedMap()
     }
 
+    setPlayerStat() {
+        const CurrentPlayerStats = this.savesLoader.getProgressCurrentPlayerStats(),
+            tempPlayer: any = this.player
+
+        Object["keys"](this.player).some((stat) => {
+            Object["keys"](CurrentPlayerStats).some((newStat: string, i: number) => {
+                if (stat === newStat) {
+                    tempPlayer[stat] = Object["values"](CurrentPlayerStats)[i]
+                }
+            })
+        })
+
+        this.player = tempPlayer
+    }
+
+    getPlayerTexture(): string {
+        switch (this.player.diraction) {
+            case GameEntityDiraction.Left:
+                return texture[0]
+            
+            case GameEntityDiraction.Right:
+                return texture[1]
+
+            default: return this.player.texture
+        }
+    }
+
     MapElementsHandler(): void {
         this.updateTypedMap(this.player.x, this.player.y, this.getEntityByType(this.TypedMap[this.player.y][this.player.x].originalEntityType))
         // this.updateTypedMap(this.player.x, this.player.y, new Air(this.player.x, this.player.y))
+
+        this.player.setTexture(this.getPlayerTexture())
+
         switch (this.controls.getActiveControls()) {
             case GameKey.Up:
-                this.player.moveToPos(this.player.x, this.player.y-1, this.TypedMap, this.loadedEntites, GameEntityDiraction.Top)
+                this.player.moveToPos(this.player.x, this.player.y-1, this.TypedMap, this.loadedEntites, this.player.texture, GameEntityDiraction.Top)
                 break
             case GameKey.Down:
-                this.player.moveToPos(this.player.x, this.player.y+1, this.TypedMap, this.loadedEntites, GameEntityDiraction.Bottom)
+                this.player.moveToPos(this.player.x, this.player.y+1, this.TypedMap, this.loadedEntites, this.player.texture, GameEntityDiraction.Bottom)
                 break
             case GameKey.Left:
-                this.player.moveToPos(this.player.x-1, this.player.y, this.TypedMap, this.loadedEntites, GameEntityDiraction.Left, texture[0])
+                this.player.moveToPos(this.player.x-1, this.player.y, this.TypedMap, this.loadedEntites, this.player.texture, GameEntityDiraction.Left)
                 break
             case GameKey.Right:
-                this.player.moveToPos(this.player.x+1, this.player.y, this.TypedMap, this.loadedEntites, GameEntityDiraction.Right, texture[1])
+                this.player.moveToPos(this.player.x+1, this.player.y, this.TypedMap, this.loadedEntites, this.player.texture, GameEntityDiraction.Right)
                 break
             default: 
-                this.player.moveToPos(this.player.x, this.player.y, this.TypedMap, this.loadedEntites)
+                this.player.moveToPos(this.player.x, this.player.y, this.TypedMap, this.loadedEntites, this.player.texture)
                 break
         }
 
         // this.controls.clearKeyActiveKey()
         this.updateTypedMap(this.player.x, this.player.y, this.player)
+        this.savesLoader.setProgressCurrentPlayerStats(this.player)
     }
 
     getMapEntityByCoord(x: number, y: number): Entity {

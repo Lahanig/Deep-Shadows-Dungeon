@@ -1,3 +1,5 @@
+import { GameSavesLoader, SavesLoader } from "./SavesLoader"
+
 var ks = require('node-key-sender')
 var keypress = require('keypress')
 var readline = require('readline')
@@ -16,6 +18,7 @@ export class Controls {
     playerLocale: string
     keyReleaseTimeout: NodeJS.Timeout | undefined
     freshRate: number
+    savesLoader: SavesLoader
 
     constructor() {
         this.currentKeyPressed = GameKey.Undefined
@@ -23,6 +26,7 @@ export class Controls {
         this.playerLocale = ""
         this.keyReleaseTimeout = undefined
         this.freshRate = 4.16
+        this.savesLoader = GameSavesLoader
     }
 
     getPlayerLocale(): string {
@@ -69,7 +73,7 @@ export class Controls {
             }
 
             if (key && key.ctrl && key.name == 'c') {
-                process.exit()
+                this.savesLoader.saveGameProgress()
             }
         })
     }
