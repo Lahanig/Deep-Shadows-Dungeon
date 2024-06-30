@@ -1,4 +1,5 @@
 {
     "Debug": false, 
-    "MapRender": true
+    "MapRender": true,
+    "isDev": false
 }

@@ -1,23 +1,33 @@
 import { fs, path } from "."
 import { Entity } from "../Models/ABSModels/Entity"
 import { Player } from "../Models/ContentModels/Player"
-import progress from "../progress.json"
+import config from "../config.json"
+
+// import progress from "../progress.json"
+// const progress = require('../progress.json')
+
+const progress: Progress = config.isDev === true ? require('../progress.json') : JSON.parse(fs.readFileSync(path.join(path.dirname(process.execPath), 'progress.json'), 'utf8'))
+
+// const progress = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'progress.json'), 'utf8'))
 
 interface Progress {
     currentMap: any
     currentPlayerStats: any
-    currentLoadedEntites: any[]
+    currentLoadedEntites: any[] 
 }
 
 export class SavesLoader {
     progress: Progress
+    progressPath: string
 
     constructor() {
         this.progress = progress
+        this.progressPath = config.isDev === true ? path.join(__dirname, "../progress.json") : path.join(path.dirname(process.execPath), 'progress.json')
     }
 
     writeProgressFile(): void {
-        fs.writeFile(path.join(__dirname, '../progress.json'), JSON.stringify(this.progress), (err) => {
+        // console.log(path.dirname(process.execPath), progress.currentMap.name)
+        fs.writeFile(this.progressPath, JSON.stringify(this.progress), (err) => {
             if (err) {
                 console.log('Error writing file:', err)
             } else {
@@ -76,7 +86,7 @@ export class SavesLoader {
     saveGameProgress() {
         this.updateProgress()
 
-        fs.writeFile(path.join(__dirname, '../progress.json'), JSON.stringify(this.progress), (err) => {
+        fs.writeFile(this.progressPath, JSON.stringify(this.progress), (err) => {
             if (err) {
                 console.log('Error writing file:', err)
             } else {
