@@ -17,9 +17,11 @@ export class EntityLoader {
     }
 
     loadEnitityModels(): void {
+        // Загружаем модели сущностей
+
         this.entityModels = []
 
-        // No build code...
+        // Несобираемый код
 
         // const foldersPath = path.join(__dirname, '../Models/ContentModels')
         // const entityModelFiles = fs.readdirSync(foldersPath).filter(file => file.endsWith('.js'))
@@ -41,6 +43,8 @@ export class EntityLoader {
     }
 
     _getEntityModel(rawEntity: string, rawEntityX: number, rawEntityY: number): Entity {
+        // Получаем сущность из ее строкового обозначения на карте и координат
+
         const result: Entity[] = []
 
         this.entityModels.some(entityModel => {
@@ -57,6 +61,8 @@ export class EntityLoader {
     }
 
     getFloorEntites(): Entity[] {
+        // Возвращаем массив сущностей из файла сохранения, если он пустой, тогда создаем новый из сущностей на карте
+
         this.loadEnitityModels()
 
         const Entites: Entity[] = []

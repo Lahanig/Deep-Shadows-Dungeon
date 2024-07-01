@@ -16,6 +16,7 @@ export abstract class Entity {
     money: number
     type: GameEntityType
     lifeState: GameEntityLifeState
+    damage: number
 
     constructor(x: number, y: number, texture: string = "U", id: number = 0) {
         this.x = x
@@ -27,13 +28,15 @@ export abstract class Entity {
         this.money = randomInt(0, 5)
         this.type = GameEntityType.Undefined
         this.lifeState = GameEntityLifeState.Alive
+        this.damage = 0
     }
 
+    // Зачастую переопределяемый метод
     collision(x: number, y: number, mapCell: TypedMapCell[][], loadedEntites: Entity[] | null = null, player: Player | null = null): void | null {
         return null
     }
 
-    setDiraction(diraction: GameEntityDiraction): void {
+    setDiraction(diraction: GameEntityDiraction): void { 
         this.diraction = diraction
     }
 
@@ -43,6 +46,8 @@ export abstract class Entity {
     }
 
     isCollision(mapCell: TypedMapCell): boolean {
+        // Возвращаем проходимая сущность или нет
+
         switch (mapCell.entityType) {
             case GameEntityType.Air:
                 return false

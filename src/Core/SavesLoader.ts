@@ -2,11 +2,13 @@ import { fs, path } from "."
 import { Entity } from "../Models/ABSModels/Entity"
 import { Player } from "../Models/ContentModels/Player"
 import config from "../config.json"
+import progressTemplate from '../progressTemplate.json'
 
 // import progress from "../progress.json"
 // const progress = require('../progress.json')
 
-const progress: Progress = config.isDev === true ? require('../progress.json') : JSON.parse(fs.readFileSync(path.join(path.dirname(process.execPath), 'progress.json'), 'utf8'))
+// Получаем данные из файла сохранения, если он пустой, то создаем новый по шаблону
+const progress: Progress = config.isDev === true ? fs.readFileSync(path.join(__dirname, '../progress.json'), "utf8") === "" ? progressTemplate : JSON.parse(fs.readFileSync(path.join(__dirname, '../progress.json', 'utf8'), 'utf8')) : JSON.parse(fs.readFileSync(path.join(path.dirname(process.execPath), 'progress.json'), 'utf8'))
 
 // const progress = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'progress.json'), 'utf8'))
 
@@ -26,6 +28,8 @@ export class SavesLoader {
     }
 
     writeProgressFile(): void {
+        // Перезаписываем файл сохранения
+
         // console.log(path.dirname(process.execPath), progress.currentMap.name)
         fs.writeFile(this.progressPath, JSON.stringify(this.progress), (err) => {
             if (err) {
@@ -37,10 +41,14 @@ export class SavesLoader {
     }
 
     updateProgress(): void {
+        // Обновляем данные в поле progress из файла сохранения
+
         this.progress = progress
     }
 
     setProgressMap(progressMapName: Progress["currentMap"]["name"]): void {
+        // Перезаписываем поле CurrentMap в файле сохранения 
+
         this.updateProgress()
 
         this.progress.currentMap.name = progressMapName
@@ -49,6 +57,8 @@ export class SavesLoader {
     }
 
     setProgressEntitesLoaded(loadedEntites: Entity[]): void {
+        // Перезаписываем загруженные сущности в файле сохранения 
+
         this.updateProgress()
 
         this.progress.currentLoadedEntites = loadedEntites
@@ -57,12 +67,16 @@ export class SavesLoader {
     }
 
     getProgressEntitesLoaded(): Progress["currentLoadedEntites"] {
+        // Возвращаем загруженные сущности из файла сохранения
+        
         this.updateProgress()
 
         return this.progress.currentLoadedEntites
     }
 
     setProgressCurrentPlayerStats(player: Player) {
+        // Перезаписываем даннные игрока в файле сохранения 
+
         this.updateProgress()
 
         this.progress.currentPlayerStats = {
@@ -78,12 +92,16 @@ export class SavesLoader {
     }
 
     getProgressCurrentPlayerStats(): Progress["currentPlayerStats"] {
+        // Возвращаем данные игрока из файла сохранения
+
         this.updateProgress()
 
         return this.progress.currentPlayerStats
     }
 
     saveGameProgress() {
+        // Сохраняем игру и выходим
+
         this.updateProgress()
 
         fs.writeFile(this.progressPath, JSON.stringify(this.progress), (err) => {

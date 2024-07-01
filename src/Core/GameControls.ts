@@ -30,27 +30,39 @@ export class Controls {
     }
 
     getPlayerLocale(): string {
+        // Возвращаем сообщение о локали
+
         return this.playerLocale
     }
 
     getActiveControls(): GameKey | any {
+        // Возвращаем текущую нажататую клавишу
+
         return this.currentKeyPressed
     }
 
     clearKeyActiveKey(): void {
+        // Очищаем нажатую клавишу
+
         this.currentKeyPressed = this.getActiveControlsType("none")
     }
 
     setLocale(flag: boolean = false): void {
+        // Если у игрока локаль не en, то просим ее поменять
+
         if (flag === true) this.playerLocale = "              Please change locale to en, for move character"
         else this.playerLocale = ""
     }
 
     setActiveKey(key: string): void {
+        // Устанавливаем нажатую клавишу
+        
         this.currentKeyPressed = this.getActiveControlsType(key)
     }
 
     async setKeypressListener(): Promise<void> {
+        // Устанавливаем прослушку на управление
+
         readline.emitKeypressEvents(process.stdin)
 
         if (process.stdin.isTTY)
@@ -102,6 +114,8 @@ export class Controls {
     // }
 
     getActiveControlsType(key: string): GameKey {
+        // Возвращаем тип в зависимости от нажатой клавиши
+        
         switch (key) {
             case "w":
                 return GameKey.Up

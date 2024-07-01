@@ -13,12 +13,16 @@ export class Player extends Entity {
     }
 
     collision(x: number, y: number, mapCell: TypedMapCell[][], loadedEntites: Entity[]): void {
+        // Если игрок столкнулся с сущностью вызываем её метод collision
+
         loadedEntites.some(loadedEntity => {
             if (loadedEntity.x === x && loadedEntity.y === y) return loadedEntity.collision(x, y, mapCell, null, this)
         })
     }
 
     moveToPos(x: number, y: number, typedMap: TypedMapCell[][], loadedEntites: Entity[], texture: string = this.texture, diraction: GameEntityDiraction = this.diraction): void {
+        // Перемещаем игрока на заданные координаты и проверяем столкновения
+
         if (this.isCollision(typedMap[y][x]) === true) return
 
         this.collision(x, y, typedMap, loadedEntites)

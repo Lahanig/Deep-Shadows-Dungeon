@@ -59,7 +59,13 @@ export class Core {
         this.TypedMap = this.getTypedMap()
     }
 
+    // setPause(toggle: boolean = true) {
+    //     this.pause = toggle
+    // }
+
     setPlayerStat() {
+        // Устанавливаем данные игрока из файла сохранения
+
         const CurrentPlayerStats = this.savesLoader.getProgressCurrentPlayerStats(),
             tempPlayer: any = this.player
 
@@ -75,6 +81,8 @@ export class Core {
     }
 
     getPlayerTexture(): string {
+        // Возвращаем текстуру игрока в зависимости от его направления
+
         switch (this.player.diraction) {
             case GameEntityDiraction.Left:
                 return texture[0]
@@ -87,6 +95,13 @@ export class Core {
     }
 
     MapElementsHandler(): void {
+        // Обновляем элементы на карте
+
+        if (this.player.hp <= 0) {
+            this.player.lifeState = GameEntityLifeState.Death
+            return this.savesLoader.setProgressCurrentPlayerStats(this.player)
+        } 
+
         this.updateTypedMap(this.player.x, this.player.y, this.getEntityByType(this.TypedMap[this.player.y][this.player.x].originalEntityType))
         // this.updateTypedMap(this.player.x, this.player.y, new Air(this.player.x, this.player.y))
 
@@ -112,10 +127,12 @@ export class Core {
 
         // this.controls.clearKeyActiveKey()
         this.updateTypedMap(this.player.x, this.player.y, this.player)
-        this.savesLoader.setProgressCurrentPlayerStats(this.player)
+        if (this.controls.getActiveControls() !== GameKey.Undefined) this.savesLoader.setProgressCurrentPlayerStats(this.player)
     }
 
     getMapEntityByCoord(x: number, y: number): Entity {
+        // Возвращаем сущность используя ее координаты на карте
+
         const result: Entity[] = []
 
         this.loadedEntites.some((loadedEntity, i) => {
@@ -126,6 +143,8 @@ export class Core {
     }
 
     getEntityByType(entityType: GameEntityType): Entity {
+        // Возвращаем сущность по типу
+
         // this.loadedEntites = entityLoader.getFloorEntites()
 
         const result: Entity[] = []
@@ -139,6 +158,8 @@ export class Core {
     }
 
     getTypedMap(): TypedMapCell[][] {
+        // Возвращаем типизированную карту
+
         const TypedMap: TypedMapCell[][] = [[]]
 
         this.RawMap.some((y, i1) => {
@@ -163,12 +184,16 @@ export class Core {
     }
 
     getCurrentTypedMap(): TypedMapCell[][] {
+        // Возвращаем текущую типизированную карту
+
         this.checkDeathEntity()
 
         return this.TypedMap 
     }
 
     checkDeathEntity(): void {
+        // Проверяем LifeState сущностей
+
         this.TypedMap .some((y, i1) => {
             y.some((x, i2) => {
                 let mapEntity = this.getMapEntityByCoord(i2, i1)
@@ -183,12 +208,16 @@ export class Core {
                     this.TypedMap[i1][i2].originalEntityType = GameEntityType.Air
                     this.TypedMap[i1][i2].entityType = mapEntity.type
                     this.TypedMap[i1][i2].texture = mapEntity.texture
+
+                    this.savesLoader.setProgressEntitesLoaded(this.loadedEntites)
                 }
             })
         })
     }
 
     updateTypedMap(x: number, y: number, entity?: Entity, texture?: string, newOriginalEntityType?: GameEntityType): void {
+        // Обновляем типизированную карту
+
         const mapEntity = this.getMapEntityByCoord(x, y)
         const Entity = !entity ? mapEntity : entity
 
@@ -202,6 +231,8 @@ export class Core {
     }
 
     getMap(): string[][] {
+        // Возвращаем карту игры пригодную к отрисовке
+
         const simpleMap: string[][] = [[]]
 
         this.getCurrentTypedMap().some((y, i1) => {
@@ -218,6 +249,8 @@ export class Core {
     }
 
     start(): void {
+        // Запускаем игру
+
         this.controls.setKeypressListener()
 
         if (this.renderer) this.renderer.render()

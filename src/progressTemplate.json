@@ -1,0 +1,14 @@
+{
+    "currentMap": {
+        "name": ""
+    },
+    "currentPlayerStats": {
+        "x": 2,
+        "y": 3,
+        "hp": 100,
+        "money": 0,
+        "diraction": 2,
+        "lifeState": 0
+    },
+    "currentLoadedEntites": []
+}

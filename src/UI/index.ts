@@ -14,6 +14,8 @@ export class GameUI {
     }
 
     getMap(): string[][] {
+        // Возвращаем Элемент интерфейса Map
+
         return this.GameUITemplates.Map
     }
 }

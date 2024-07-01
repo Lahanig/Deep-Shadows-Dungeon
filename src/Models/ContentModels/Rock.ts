@@ -10,11 +10,14 @@ export class Rock extends Entity {
         this.texture = "^"
         this.type = GameEntityType.Spike
         this.isAttack = false
+        this.damage = 5
     }
 
     collision(x: number, y: number, mapCell: TypedMapCell[][], loadedEntites: null, player: Player): void  {
+        // При столкновении с игроком наносим ему урон, раз в секунду
+
         if (this.isAttack === false) {
-           player.hp -= 5 
+           player.hp -= this.damage
            this.isAttack = true
            setTimeout(() => {this.isAttack = false}, 1000)
         }

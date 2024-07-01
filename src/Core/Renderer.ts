@@ -1,4 +1,5 @@
 import { Core } from "."
+import { GameEntityLifeState } from "./Types/GameEntityLifeState"
 
 type GameLoop = {
     timeout: number
@@ -26,7 +27,22 @@ export class Renderer extends Core {
         this.UIMap = []
     }
 
+    quit() {
+        // Если игрок мертв - выходим из игры
+
+        if (this.player.lifeState === GameEntityLifeState.Death) {
+            if (this.gameLoop.interval !== null) clearInterval(this.gameLoop.interval)
+
+            console.clear()
+            console.log("Potracheno")
+
+            process.exit()
+        }
+    }
+
     render(): void {
+        // Игровой цикл + отрисовка
+
         this.gameLoop.interval = setInterval(() => {
             this.MapElementsHandler()
 
@@ -71,11 +87,14 @@ export class Renderer extends Core {
                         this.loadedEntites.length
                     )
             }
-            
+
+            this.quit()
         }, this.gameLoop.timeout)
     }
 
     getUI() {
+        // Возвращаем UI
+        
         return {
             map: this.UIMap
         }

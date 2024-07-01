@@ -24,10 +24,14 @@ export class MapLoader {
     }
 
     updateCurrentMap(): void {
+        // Обновляем текущую карту
+
         this.currentMap.map = floor1
     }
 
     setCurrentMap(): void {
+        // Устанавливаем текущую карту и сохраняем
+
         this.currentMap.name = "floor1"
 
         this.saveLoader.setProgressMap(this.currentMap.name)
@@ -36,6 +40,8 @@ export class MapLoader {
     }
 
     getCurrentMap(): string[][] {
+        // Возвращаем текущую карту
+
         this.updateCurrentMap()
 
         return this.currentMap.map
