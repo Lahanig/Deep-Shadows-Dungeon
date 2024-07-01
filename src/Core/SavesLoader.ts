@@ -7,8 +7,46 @@ import progressTemplate from '../progressTemplate.json'
 // import progress from "../progress.json"
 // const progress = require('../progress.json')
 
+const writeProgressTemplateFile = (toggle: boolean = true) => {
+    if (toggle == true) {
+        fs.writeFileSync(path.join(__dirname, '../progress.json'), JSON.stringify(progressTemplate))
+        return progressTemplate
+    } else {
+        fs.writeFileSync(path.join(path.dirname(process.execPath), 'progress.json'), JSON.stringify(progressTemplate))
+        return progressTemplate
+    }   
+}
+
+const getProgressData = () => {
+    if (config.isDev === true) {
+        try {
+            fs.readFileSync(path.join(__dirname, '../progress.json'), "utf8")
+        } catch (error) {
+            writeProgressTemplateFile()
+        }
+
+        if (fs.readFileSync(path.join(__dirname, '../progress.json'), "utf8") === "") {
+            return writeProgressTemplateFile()
+        } else {
+            return JSON.parse(fs.readFileSync(path.join(__dirname, '../progress.json'), 'utf8'))
+        }
+    } else {
+        try {
+            fs.readFileSync(path.join(path.dirname(process.execPath), 'progress.json'), 'utf8')
+        } catch (error) {
+            writeProgressTemplateFile(false)
+        }
+
+        if (fs.readFileSync(path.join(path.dirname(process.execPath), 'progress.json'), 'utf8') === "") {
+            return writeProgressTemplateFile(false)
+        } else {
+            return JSON.parse(fs.readFileSync(path.join(path.dirname(process.execPath), 'progress.json'), 'utf8'))
+        }
+    }
+}
+
 // Получаем данные из файла сохранения, если он пустой, то создаем новый по шаблону
-const progress: Progress = config.isDev === true ? fs.readFileSync(path.join(__dirname, '../progress.json'), "utf8") === "" ? progressTemplate : JSON.parse(fs.readFileSync(path.join(__dirname, '../progress.json', 'utf8'), 'utf8')) : JSON.parse(fs.readFileSync(path.join(path.dirname(process.execPath), 'progress.json'), 'utf8'))
+const progress: Progress = getProgressData()
 
 // const progress = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'progress.json'), 'utf8'))
 

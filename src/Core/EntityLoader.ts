@@ -1,5 +1,4 @@
 import { path, fs } from "."
-import progress from "../progress.json"
 import { Constructable, Entity } from "../Models/ABSModels/Entity"
 import Models from "../Models/Requirement"
 import { GameMapLoader } from "./GameMapLoader"
@@ -69,7 +68,7 @@ export class EntityLoader {
 
         // console.log(progress.currentLoadedEntites.length)
 
-        if (progress.currentLoadedEntites.length <= 1) {
+        if (this.savesLoader.progress.currentLoadedEntites.length <= 1) {
             const Entites: Entity[] = []
 
             this.rawMap.some((y, i1) => {

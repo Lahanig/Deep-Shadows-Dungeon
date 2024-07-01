@@ -1,6 +1,5 @@
 {
     "Debug": false, 
     "MapRender": true,
-    "isDev": true,
-    "pauseGame": false
+    "isDev": false
 }
