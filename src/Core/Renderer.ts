@@ -72,14 +72,14 @@ export class Renderer extends Core {
                     `\n`,
                     `  Level 1            HP:${this.player.hp}           Coins:${this.player.money}\n${temp.UI.Map.slice(0, -3)}`,
                     `\n`,
-                    `  Floor 1${this.config.Debug === true ? ", Debug" : " "}`
+                    `  Floor ${this.savesLoader.getCurrentMap().name.slice(-1)}${this.config.Debug === true ? ", Debug" : " "}`
                 )
                 
                 if (this.config.Debug === true)
-                    console.log(this.TypedMap[4][11].texture, 
+                    console.log(this.TypedMap[7][47].texture,
                         this.TypedMap[4][11].originalEntityType, 
                         this.controls.getActiveControls(),
-                        this.getMapEntityByCoord(11, 4),
+                        //this.getMapEntityByCoord(47, 7),
                         this.player,
                         // this.player.x, 
                         // this.player.y, 

@@ -1,11 +1,12 @@
 import { fs, path } from "."
-import { floor1 } from "../../content/floors/FloorTemplate.json"
+import floors from "../../content/floors/FloorTemplate.json"
 import { GameSavesLoader, SavesLoader } from "./SavesLoader"
 
 
 interface MapLoaderCurrentMap {
     map: string[][]
-    name: string
+    name: string,
+    isChanged: boolean
 }
 
 export class MapLoader {
@@ -15,28 +16,58 @@ export class MapLoader {
     constructor() {
         this.currentMap = {
             map: [],
-            name: ''
+            name: 'floor1',
+            isChanged: false
         }
 
         this.saveLoader = GameSavesLoader
 
-        this.setCurrentMap()
+        this.updateCurrentMap()
     }
 
     updateCurrentMap(): void {
         // Обновляем текущую карту
 
-        this.currentMap.map = floor1
+        this.currentMap.name = this.saveLoader.getCurrentMap().name
+
+        this.currentMap.isChanged = false
+
+        this.currentMap.map = this.getCurrentMapByProgress()
     }
 
-    setCurrentMap(): void {
+    getCurrentMapByProgress(): string[][] {
+        // Возвращаем карту из названия
+
+        const currentMapName = this.saveLoader.getCurrentMap().name,
+            tempFloors: any = floors,
+            result: any = []
+
+        Object.keys(floors).some((floorName: string) => {
+            if (floorName == currentMapName) {
+                return result.push(tempFloors[floorName])
+            }
+        })
+
+        return result[0]
+    }
+
+    setCurrentMap(mapName: string): void {
         // Устанавливаем текущую карту и сохраняем
 
-        this.currentMap.name = "floor1"
+        this.currentMap.name = mapName
+        this.currentMap.isChanged = true
 
-        this.saveLoader.setProgressMap(this.currentMap.name)
+        this.saveLoader.setProgressMap(this.currentMap)
 
         this.updateCurrentMap()
+    }
+
+    getCurrentMapName(): string {
+        // Возвращаем текущее имя карты
+
+        this.updateCurrentMap() 
+
+        return this.currentMap.name
     }
 
     getCurrentMap(): string[][] {

@@ -68,7 +68,7 @@ export class EntityLoader {
 
         // console.log(progress.currentLoadedEntites.length)
 
-        if (this.savesLoader.progress.currentLoadedEntites.length <= 1) {
+        if (this.savesLoader.progress.currentLoadedEntites.length <= 1 || this.savesLoader.progress.currentMap.isChanged === true) {
             const Entites: Entity[] = []
 
             this.rawMap.some((y, i1) => {
@@ -79,7 +79,10 @@ export class EntityLoader {
                 })
             })
 
+            // console.log(1)
+
             this.savesLoader.setProgressEntitesLoaded(Entites)
+            this.savesLoader.setProgressMap({name: this.savesLoader.getCurrentMap().name, isChanged: false})
         }
 
         this.savesLoader.getProgressEntitesLoaded().some((entity: Entity, i) => {
@@ -96,7 +99,7 @@ export class EntityLoader {
 
         this.savesLoader.setProgressEntitesLoaded(Entites)
         
-        // console.log(Entites.length)
+        console.log(Entites.length)
 
         return Entites
     }

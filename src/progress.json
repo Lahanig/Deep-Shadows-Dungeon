@@ -1,6 +1,7 @@
 {
     "currentMap": {
-        "name": ""
+        "name": "floor1",
+        "isChanged": false
     },
     "currentPlayerStats": {
         "x": 2,

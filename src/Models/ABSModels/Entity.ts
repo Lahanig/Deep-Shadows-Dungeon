@@ -1,5 +1,4 @@
-import { GameEntityType, TypedMapCell, GameEntityDiraction, randomInt } from "../../Core"
-import { GameEntityLifeState } from "../../Core/Types/GameEntityLifeState"
+import { GameEntityType, TypedMapCell, GameEntityDiraction, GameEntityLifeState, randomInt } from "../../Core"
 import { Player } from "../ContentModels/Player"
 
 export interface Constructable<T> {
@@ -17,6 +16,7 @@ export abstract class Entity {
     type: GameEntityType
     lifeState: GameEntityLifeState
     damage: number
+    isNextFloor: boolean
 
     constructor(x: number, y: number, texture: string = "U", id: number = 0) {
         this.x = x
@@ -29,6 +29,7 @@ export abstract class Entity {
         this.type = GameEntityType.Undefined
         this.lifeState = GameEntityLifeState.Alive
         this.damage = 0
+        this.isNextFloor = false
     }
 
     // Зачастую переопределяемый метод
@@ -55,7 +56,9 @@ export abstract class Entity {
                 return false
             case GameEntityType.Spike:
                 return false
-                    
+            case GameEntityType.Door:
+                return false        
+
             default: return true
         }
     }

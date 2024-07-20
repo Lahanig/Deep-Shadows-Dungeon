@@ -84,12 +84,13 @@ export class SavesLoader {
         this.progress = progress
     }
 
-    setProgressMap(progressMapName: Progress["currentMap"]["name"]): void {
+    setProgressMap(progressMap: Progress["currentMap"]): void {
         // Перезаписываем поле CurrentMap в файле сохранения 
 
         this.updateProgress()
 
-        this.progress.currentMap.name = progressMapName
+        this.progress.currentMap.name = progressMap.name
+        this.progress.currentMap.isChanged = progressMap.isChanged
 
         this.writeProgressFile()
     }
@@ -137,7 +138,15 @@ export class SavesLoader {
         return this.progress.currentPlayerStats
     }
 
-    saveGameProgress() {
+    getCurrentMap(): Progress["currentMap"] {
+        // Возвращаем данные текущей карты из сохранения
+
+        this.updateProgress()
+
+        return this.progress.currentMap
+    }
+
+    saveGameProgress(): void {
         // Сохраняем игру и выходим
 
         this.updateProgress()

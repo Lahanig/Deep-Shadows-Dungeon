@@ -1,5 +1,4 @@
-import { GameEntityType, TypedMapCell } from "../../Core"
-import { GameEntityLifeState } from "../../Core/Types/GameEntityLifeState"
+import { GameEntityType, TypedMapCell, GameEntityLifeState } from "../../Core"
 import { Entity } from "../ABSModels/Entity"
 import { Player } from "./Player"
 

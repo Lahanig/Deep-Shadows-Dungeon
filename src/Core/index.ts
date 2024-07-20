@@ -128,6 +128,23 @@ export class Core {
         // this.controls.clearKeyActiveKey()
         this.updateTypedMap(this.player.x, this.player.y, this.player)
         if (this.controls.getActiveControls() !== GameKey.Undefined) this.savesLoader.setProgressCurrentPlayerStats(this.player)
+        //if (this.TypedMap[this.player.y][this.player.x].originalEntityType == GameEntityType.Door) this.loadedEntites = entityLoader.getFloorEntites()
+        if (this.player.isNextFloor === true) {
+            this.updateTypedMap(this.player.x, this.player.y, this.getEntityByType(this.TypedMap[this.player.y][this.player.x].originalEntityType))
+            this.player.setTexture(this.getPlayerTexture())
+            this.player.moveToPos(1, 7, this.TypedMap, this.loadedEntites, this.player.texture)
+            this.updateTypedMap(this.player.x, this.player.y, this.player)
+
+            setTimeout(() => {
+                this.player.isNextFloor = false
+
+                this.savesLoader.setProgressCurrentPlayerStats(this.player)
+
+                this.loadedEntites = entityLoader.getFloorEntites()   
+                
+                setTimeout(() => this.TypedMap = this.getTypedMap(), 100)
+            }, 100)
+        }
     }
 
     getMapEntityByCoord(x: number, y: number): Entity {
@@ -257,4 +274,4 @@ export class Core {
     }
 }
 
-export { GameEntityType, GameEntityDiraction, randomInt, fs, path }
+export { GameEntityType, GameEntityDiraction, GameEntityLifeState, randomInt, fs, path }

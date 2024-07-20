@@ -5,5 +5,6 @@ export enum GameEntityType {
     Border,
     Money,
     Spike,
+    Door,
     Undefined
 }
